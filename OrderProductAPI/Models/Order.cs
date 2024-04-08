@@ -19,7 +19,10 @@ namespace OrderProductAPI.Models
         public string CustomerFullName { get; set; } = null!;
 
         [Required]
-        [RegularExpression(@"^\+?\d{0,3}\-? *\d{1,3}[- .]?\(?\d{2,3}\)?[- .]?\d{3,4}$", ErrorMessage = "Invalid phone number")]
+        //[RegularExpression(@"^\+?\d{0,3}\-? *\d{1,3}[- .]?\(?\d{2,3}\)?[- .]?\d{3,4}$", ErrorMessage = "Invalid phone number")]
+        [Phone]
         public string CustomerPhone { get; set; } = null!;
+
+        public IEnumerable<OrderProduct> OrderProducts { get; set; } = null!;
     }
 }

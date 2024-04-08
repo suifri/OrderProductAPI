@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace OrderProductAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -77,7 +77,8 @@ namespace OrderProductAPI.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_OrderProduct_ProductId",
                 table: "OrderProduct",
-                column: "ProductId");
+                column: "ProductId",
+                unique: true);
         }
 
         /// <inheritdoc />

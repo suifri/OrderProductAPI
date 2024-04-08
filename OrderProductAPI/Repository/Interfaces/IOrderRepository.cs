@@ -1,15 +1,15 @@
-﻿using OrderProductAPI.DTO;
+﻿using OrderProductAPI.DTO.Response;
 
 namespace OrderProductAPI.Repository.Interfaces
 {
     public interface IOrderRepository
     {
-        Task Create(OrderDTO order);
+        Task Create(ResponseOrderDTO order);
 
-        Task<OrderDTO[]> Read();
+        Task<ResponseOrderDTO[]> Read();
 
-        Task<OrderDTO> Read(int id);
+        Task<ResponseOrderDTO> Read(int id);
 
-        Task<OrderDTO> Read(string code);
+        Task<ResponseOrderDTO> Read(string code);
     }
 }

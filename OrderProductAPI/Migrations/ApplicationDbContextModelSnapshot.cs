@@ -71,7 +71,8 @@ namespace OrderProductAPI.Migrations
 
                     b.HasIndex("OrderId");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("ProductId")
+                        .IsUnique();
 
                     b.ToTable("OrderProduct");
                 });
@@ -106,20 +107,30 @@ namespace OrderProductAPI.Migrations
             modelBuilder.Entity("OrderProductAPI.Models.OrderProduct", b =>
                 {
                     b.HasOne("OrderProductAPI.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("OrderProductAPI.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
+                        .WithOne("OrderProduct")
+                        .HasForeignKey("OrderProductAPI.Models.OrderProduct", "ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("OrderProductAPI.Models.Order", b =>
+                {
+                    b.Navigation("OrderProducts");
+                });
+
+            modelBuilder.Entity("OrderProductAPI.Models.Product", b =>
+                {
+                    b.Navigation("OrderProduct");
                 });
 #pragma warning restore 612, 618
         }
