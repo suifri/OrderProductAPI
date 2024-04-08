@@ -17,10 +17,12 @@ namespace OrderProductAPI.Models
 
         [Required]
         [MaxLength(200)]
+        [RegularExpression(@"^[^\d]*$", ErrorMessage = "Invalid product name")]
         public string Name { get; set; } = null!;
 
         [Required]
         [Precision(10,2)]
+        [Range(0.1, double.MaxValue, ErrorMessage = "Number must be more than 0")]
         public decimal Price { get; set; }
     }
 }

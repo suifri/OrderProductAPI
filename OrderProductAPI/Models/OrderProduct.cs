@@ -12,10 +12,12 @@ namespace OrderProductAPI.Models
         public int Id { get; set; }
 
         [Required]
+        [Range(1, int.MaxValue)]
         public int Amount { get; set; }
 
         [Required]
         [Precision(10, 2)]
+        [Range(0.1, double.MaxValue, ErrorMessage = "Price must be more than 0")]
         public decimal TotalPrice { get; set; }
 
         [ForeignKey("Product")]
