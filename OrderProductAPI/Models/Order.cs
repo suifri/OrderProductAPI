@@ -15,7 +15,7 @@ namespace OrderProductAPI.Models
         public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         [Required]
-        [RegularExpression(@"^(?=.*\s)[^\d\s]*$", ErrorMessage = "Invalid customer name")]
+        //[RegularExpression(@"^(?=.*\s)[^\d\s]*$", ErrorMessage = "Invalid customer name")]
         public string CustomerFullName { get; set; } = null!;
 
         [Required]

@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OrderProductAPI.Contexts;
@@ -7,7 +6,6 @@ using OrderProductAPI.DTO.Request;
 using OrderProductAPI.DTO.Response;
 using OrderProductAPI.Models;
 using OrderProductAPI.Repository.Interfaces;
-using System.Runtime.CompilerServices;
 
 namespace OrderProductAPI.Repository.Implementations
 {
@@ -29,7 +27,7 @@ namespace OrderProductAPI.Repository.Implementations
                 if ((await _context.Products.AnyAsync(x => x.Id == item.ProductId) == false))
                     return new BadRequestResult();
 
-            var newOrder = new Order { CustomerFullName = order.CustomerFullName, CustomerPhone = order.CustomerPhone};
+            var newOrder = _mapper.Map<Order>(order);
             await _context.Orders.AddAsync(newOrder);
             await _context.SaveChangesAsync();
 
@@ -49,7 +47,7 @@ namespace OrderProductAPI.Repository.Implementations
                 for (int i = 0; i < item.OrderProducts.Count(); i++)
                     map.Add(item.OrderProducts.ElementAt(i).Product.Id, item.OrderProducts.ElementAt(i).Product.Name);
 
-                resultList.Add(new ResponseOrderDTO { Id = item.Id, CustomerFullName = item.CustomerFullName, CreatedOn = item.CreatedOn, CustomerPhone = item.CustomerPhone, ProductInformation = map });
+                resultList.Add(new ResponseOrderDTO { Id = item.Id, CustomerFullName = item.CustomerFullName, CreatedOn = item.CreatedOn, CustomerPhone = item.CustomerPhone });
             }
 
             return resultList;
@@ -62,28 +60,40 @@ namespace OrderProductAPI.Repository.Implementations
             for (int i = 0; i < order.OrderProducts.Count(); i++)
                 map.Add(order.OrderProducts.ElementAt(i).Product.Id, order.OrderProducts.ElementAt(i).Product.Name);
 
-            return new ResponseOrderDTO { Id = order.Id, CreatedOn = order.CreatedOn, CustomerFullName = order.CustomerFullName, CustomerPhone = order.CustomerPhone, ProductInformation = map };
+            return new ResponseOrderDTO { Id = order.Id, CreatedOn = order.CreatedOn, CustomerFullName = order.CustomerFullName, CustomerPhone = order.CustomerPhone };
         }
 
-        public async Task<ResponseOrderDTO[]> Read()
+        public async Task<IEnumerable<ResponseOrderDTO>> Read()
         {
             var res = await _context.Orders.Include(x => x.OrderProducts).ThenInclude(x => x.Product).ToListAsync();
 
-            return responseOrderDTOsConverter(res).ToArray();
+            return _mapper.Map<IEnumerable<ResponseOrderDTO>>(res);
         }
 
         public async Task<ResponseOrderDTO> Read(int id)
         {
-            var res = await _context.Orders.Include(x => x.OrderProducts).ThenInclude(x => x.Product).Where(x => x.Id == id).FirstAsync();
+            var sqlSelectOrder = @"SELECT * FROM [Order] WHERE Id={0}";
 
-            return responseOrderDTOConverter(res);
+            var order = _mapper.Map<ResponseOrderDTO>((await _context.Orders.FromSqlRaw<Order>(sqlSelectOrder, id).ToListAsync()).FirstOrDefault());
+
+            var sqlSelectProducts = @"SELECT p.Id, p.Code, p.Name, p.Price FROM OrderProduct op INNER JOIN Product p ON p.Id = op.ProductId WHERE OrderId={0}";
+
+            var products = _mapper.Map<IEnumerable<ResponseProductDTO>>(await _context.Products.FromSqlRaw(sqlSelectProducts, id).ToListAsync());
+
+            order.Products = products;
+
+            return order;
         }
 
         public async Task<IEnumerable<ResponseOrderDTO>> Read(string code)
         {
-            var res = await _context.Orders.Include(x => x.OrderProducts).ThenInclude(x => x.Product).Where(o => o.OrderProducts.Any(op => op.Product.Code == code)).ToListAsync();
+            var sqlSelectOrder = @"SELECT * FROM [Order]";
 
-            return responseOrderDTOsConverter(res);
+            var order = _mapper.Map<ResponseOrderDTO>((await _context.Orders.FromSqlRaw<Order>(sqlSelectOrder).ToListAsync()).FirstOrDefault());
+
+
+
+            return null;
         }
     }
 }

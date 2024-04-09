@@ -8,7 +8,7 @@ namespace OrderProductAPI.Repository.Interfaces
     {
         Task<IActionResult> Create(RequestOrderDTO order);
 
-        Task<ResponseOrderDTO[]> Read();
+        Task<IEnumerable<ResponseOrderDTO>> Read();
 
         Task<ResponseOrderDTO> Read(int id);
 

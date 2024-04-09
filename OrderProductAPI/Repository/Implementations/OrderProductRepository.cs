@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OrderProductAPI.Contexts;
 using OrderProductAPI.DTO.Request;
-using OrderProductAPI.Models;
 using OrderProductAPI.Repository.Interfaces;
 
 namespace OrderProductAPI.Repository.Implementations

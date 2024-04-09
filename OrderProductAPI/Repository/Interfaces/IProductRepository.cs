@@ -10,5 +10,6 @@ namespace OrderProductAPI.Repository.Interfaces
         public Task<ResponseProductDTO[]> Read();
         public Task<ResponseProductDTO> Read(int id);
         public Task<ResponseProductDTO> Read(decimal price);
+        public Task<IEnumerable<ResponseProductDTO>> ReadByOrderId(int orderId);
     }
 }

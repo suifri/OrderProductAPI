@@ -53,6 +53,13 @@ namespace OrderProductAPI.Repository.Implementations
             return _mapper.Map<Product, ResponseProductDTO>(product);
         }
 
+        public async Task<IEnumerable<ResponseProductDTO>> ReadByOrderId(int orderId)
+        {
+            var sqlSelectProducts = @"SELECT p.Id, p.Code, p.Name, p.Price FROM OrderProduct op INNER JOIN Product p ON p.Id = op.ProductId WHERE OrderId={0}";
+
+            return _mapper.Map<IEnumerable<ResponseProductDTO>>(await _context.Products.FromSqlRaw(sqlSelectProducts, orderId).ToListAsync());
+        }
+
         public async Task Update(int id, RequestProductDTO updatedProduct)
         {
             var sql = @"UPDATE Product SET Code = {0}, Name = {1}, Price = {2} WHERE Id = {3}";

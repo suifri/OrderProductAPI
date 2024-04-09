@@ -15,9 +15,11 @@ namespace OrderProductAPI.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IProductRepository _productRepository;
         private readonly IValidator<RequestOrderDTO> _validator;
-        public OrderController(IOrderRepository orderRepository, IValidator<RequestOrderDTO> validator)
+        public OrderController(IProductRepository productRepository, IOrderRepository orderRepository, IValidator<RequestOrderDTO> validator)
         {
+            _productRepository = productRepository;
             _orderRepository = orderRepository;
             _validator = validator;
         }
@@ -56,7 +58,13 @@ namespace OrderProductAPI.Controllers
         [HttpGet(Name = "GetById")]
         public async Task<ResponseOrderDTO> GetOrderById([SwaggerParameter("Searching orders Id")]int id)
         {
-            return await _orderRepository.Read(id);
+            var products = await _productRepository.ReadByOrderId(id);
+
+            var order = await _orderRepository.Read(id);
+
+            order.Products = products;
+
+            return order;
         }
 
         [SwaggerOperation(
