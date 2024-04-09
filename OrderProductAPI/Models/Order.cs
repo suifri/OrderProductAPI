@@ -12,7 +12,7 @@ namespace OrderProductAPI.Models
         public int Id { get; set; }
 
         [Required]
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         [Required]
         [RegularExpression(@"^(?=.*\s)[^\d\s]*$", ErrorMessage = "Invalid customer name")]

@@ -1,15 +1,17 @@
-﻿using OrderProductAPI.DTO.Response;
+﻿using Microsoft.AspNetCore.Mvc;
+using OrderProductAPI.DTO.Request;
+using OrderProductAPI.DTO.Response;
 
 namespace OrderProductAPI.Repository.Interfaces
 {
     public interface IOrderRepository
     {
-        Task Create(ResponseOrderDTO order);
+        Task<IActionResult> Create(RequestOrderDTO order);
 
         Task<ResponseOrderDTO[]> Read();
 
         Task<ResponseOrderDTO> Read(int id);
 
-        Task<ResponseOrderDTO> Read(string code);
+        Task<IEnumerable<ResponseOrderDTO>> Read(string code);
     }
 }

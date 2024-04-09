@@ -11,6 +11,7 @@ namespace OrderProductAPI.Mapper
         {
             CreateMap<RequestProductDTO, Product>();
             CreateMap<Product, ResponseProductDTO>();
+            CreateMap<RequestOrderDTO, Order>();
         }
     }
 }
