@@ -7,6 +7,7 @@ using OrderProductAPI.DTO.Response;
 using OrderProductAPI.Filters;
 using OrderProductAPI.Repository.Interfaces;
 using OrderProductAPI.Validators;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace OrderProductAPI.Controllers
 {
@@ -22,6 +23,11 @@ namespace OrderProductAPI.Controllers
             _validator = validator;
         }
 
+        [SwaggerOperation(
+            Summary = "Get a list of all evailable products.",
+            Description = "Retrives an array of products"
+            )]
+
         [HttpGet(Name = "GetAllProducts")]
         public async Task<ResponseProductDTO[]> GetProducts()
         {
@@ -30,25 +36,37 @@ namespace OrderProductAPI.Controllers
             return products;
         }
 
+        [SwaggerOperation(
+        Summary = "Get a specific product by Id.",
+        Description = "Retrives a single product with specific Id"
+        )]
         [HttpGet(Name = "GetProductById")]
-        public async Task<ResponseProductDTO> GetProductById(int id)
+        public async Task<ResponseProductDTO> GetProductById([SwaggerParameter("Id of searching product")]int id)
         {
             var product = await _productRepository.Read(id);
 
             return product;
         }
 
+        [SwaggerOperation(
+        Summary = "Get products by cost.",
+        Description = "Retrives products with specific cost"
+        )]
         [HttpGet(Name = "GetProductByCost")]
-        public async Task<ResponseProductDTO> GetProductByCost(decimal cost)
+        public async Task<ResponseProductDTO> GetProductByCost([SwaggerParameter("Cost of searching product")]decimal cost)
         {
             var product = await _productRepository.Read(cost);
 
             return product;
         }
 
+        [SwaggerOperation(
+        Summary = "Create new product",
+        Description = "Create new product from DTO"
+        )]
         [HttpPost]
         [ProductPostExceptionFilterAttribute]
-        public async Task<IActionResult> Post(RequestProductDTO requestProductDTO)
+        public async Task<IActionResult> Post([SwaggerParameter("DTO that represents all necesarry data of product")]RequestProductDTO requestProductDTO)
         {
             ValidationResult validationResult = await _validator.ValidateAsync(requestProductDTO);
 
@@ -60,8 +78,13 @@ namespace OrderProductAPI.Controllers
             return Ok();
         }
 
+        [SwaggerOperation(
+        Summary = "Update existing product",
+        Description = "Update fully or only some data of product in database"
+        )]
         [HttpPut]
-        public async Task<IActionResult> Put(int id, RequestProductDTO requestProductDTO)
+        public async Task<IActionResult> Put([SwaggerParameter("Id of updating parameter")]int id,
+            [SwaggerParameter("DTO that represent necessary data of product")]RequestProductDTO requestProductDTO)
         {
             ValidationResult validationResult = await _validator.ValidateAsync(requestProductDTO);
 

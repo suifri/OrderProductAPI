@@ -6,6 +6,7 @@ using OrderProductAPI.DTO.Request;
 using OrderProductAPI.DTO.Response;
 using OrderProductAPI.Filters;
 using OrderProductAPI.Repository.Interfaces;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace OrderProductAPI.Controllers
 {
@@ -21,11 +22,14 @@ namespace OrderProductAPI.Controllers
             _validator = validator;
         }
 
+        [SwaggerOperation(
+        Summary = "Create new order",
+        Description = "Create new order from DTO with necessary fields"
+        )]
         [HttpPost]
         [OrderPostExceptionFilterAttribute]
-        public async Task<IActionResult> Post(RequestOrderDTO requestOrder)
+        public async Task<IActionResult> Post([SwaggerParameter("Input request order dto with necessary fields.")]RequestOrderDTO requestOrder)
         {
-            throw new NotImplementedException();
 
             ValidationResult validationResult = await _validator.ValidateAsync(requestOrder);
 
@@ -35,20 +39,32 @@ namespace OrderProductAPI.Controllers
             return await _orderRepository.Create(requestOrder); 
         }
 
+        [SwaggerOperation(
+        Summary = "Returns all orders in database",
+        Description = "Returns all orders in ResponseOrderDTO format"
+        )]
         [HttpGet(Name = "GetAllOrders")]
         public async Task<IEnumerable<ResponseOrderDTO>> Get()
         {
             return await _orderRepository.Read();
         }
 
+        [SwaggerOperation(
+        Summary = "Returns single order by Id",
+        Description = "Returns single order with searching Id in ResponseOrderDTO format"
+        )]
         [HttpGet(Name = "GetById")]
-        public async Task<ResponseOrderDTO> GetOrderById(int id)
+        public async Task<ResponseOrderDTO> GetOrderById([SwaggerParameter("Searching orders Id")]int id)
         {
             return await _orderRepository.Read(id);
         }
 
+        [SwaggerOperation(
+        Summary = "Returns orders by Product code",
+        Description = "Returns orders with searching Product code in ResponseOrderDTO format"
+        )]
         [HttpGet(Name = "GetByCode")]
-        public async Task<IEnumerable<ResponseOrderDTO>> GetOrderByCode(string code)
+        public async Task<IEnumerable<ResponseOrderDTO>> GetOrderByCode([SwaggerParameter("Searching product code")]string code)
         {
             return await _orderRepository.Read(code);
         }
