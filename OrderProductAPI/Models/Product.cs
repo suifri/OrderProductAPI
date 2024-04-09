@@ -24,7 +24,5 @@ namespace OrderProductAPI.Models
         [Precision(10,2)]
         [Range(0.1, double.MaxValue, ErrorMessage = "Number must be more than 0")]
         public decimal Price { get; set; }
-
-        public OrderProduct? OrderProduct { get; set; } 
     }
 }

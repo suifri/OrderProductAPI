@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using OrderProductAPI.DTO.Request;
 using OrderProductAPI.DTO.Response;
+using OrderProductAPI.Filters;
 using OrderProductAPI.Repository.Interfaces;
+using OrderProductAPI.Validators;
 
 namespace OrderProductAPI.Controllers
 {
@@ -11,9 +15,11 @@ namespace OrderProductAPI.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-        public ProductController(IProductRepository productRepository)
+        private readonly IValidator<RequestProductDTO> _validator;
+        public ProductController(IProductRepository productRepository, IValidator<RequestProductDTO> validator)
         {
             _productRepository = productRepository;
+            _validator = validator;
         }
 
         [HttpGet(Name = "GetAllProducts")]
@@ -41,15 +47,30 @@ namespace OrderProductAPI.Controllers
         }
 
         [HttpPost]
-        public async Task Post(RequestProductDTO requestProductDTO)
+        [ProductPostExceptionFilterAttribute]
+        public async Task<IActionResult> Post(RequestProductDTO requestProductDTO)
         {
+            ValidationResult validationResult = await _validator.ValidateAsync(requestProductDTO);
+
+            if (validationResult.IsValid == false)
+                return BadRequest(validationResult.Errors);
+
             await _productRepository.Create(requestProductDTO);
+
+            return Ok();
         }
 
         [HttpPut]
-        public async Task Put(int id, RequestProductDTO requestProductDTO)
+        public async Task<IActionResult> Put(int id, RequestProductDTO requestProductDTO)
         {
+            ValidationResult validationResult = await _validator.ValidateAsync(requestProductDTO);
+
+            if (validationResult.IsValid == false)
+                return BadRequest(validationResult.Errors);
+
             await _productRepository.Update(id, requestProductDTO);
+
+            return Ok();    
         }
     }
 }
