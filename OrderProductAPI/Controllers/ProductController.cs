@@ -29,7 +29,7 @@ namespace OrderProductAPI.Controllers
             )]
 
         [HttpGet(Name = "GetAllProducts")]
-        public async Task<ResponseProductDTO[]> GetProducts()
+        public async Task<IEnumerable<ResponseProductDTO>> GetProducts()
         {
             var products = await _productRepository.Read();
 
@@ -53,11 +53,11 @@ namespace OrderProductAPI.Controllers
         Description = "Retrives products with specific cost"
         )]
         [HttpGet(Name = "GetProductByCost")]
-        public async Task<ResponseProductDTO> GetProductByCost([SwaggerParameter("Cost of searching product")]decimal cost)
+        public async Task<IEnumerable<ResponseProductDTO>> GetProductByCost([SwaggerParameter("Cost of searching product")]decimal cost)
         {
-            var product = await _productRepository.Read(cost);
+            var products = await _productRepository.Read(cost);
 
-            return product;
+            return products;
         }
 
         [SwaggerOperation(

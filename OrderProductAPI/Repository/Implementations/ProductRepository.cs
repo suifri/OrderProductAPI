@@ -26,13 +26,13 @@ namespace OrderProductAPI.Repository.Implementations
             await _context.Database.ExecuteSqlRawAsync(sql, product.Code, product.Name, product.Price);
         }
 
-        public async Task<ResponseProductDTO[]> Read()
+        public async Task<IEnumerable<ResponseProductDTO>> Read()
         {
             var sql = @"SELECT * FROM Product";
 
             var products = await _context.Products.FromSqlRaw(sql).ToListAsync();
 
-            return _mapper.Map<ResponseProductDTO[]>(products);
+            return _mapper.Map<IEnumerable<ResponseProductDTO>>(products);
         }
 
         public async Task<ResponseProductDTO> Read(int id)
@@ -44,13 +44,13 @@ namespace OrderProductAPI.Repository.Implementations
             return _mapper.Map<Product, ResponseProductDTO>(product);
         }
 
-        public async Task<ResponseProductDTO> Read(decimal price)
+        public async Task<IEnumerable<ResponseProductDTO>> Read(decimal price)
         {
             var sql = @"SELECT * FROM Product WHERE Price = {0}";
 
-            var product = await _context.Products.FromSqlRaw(sql, price).FirstOrDefaultAsync();
+            var products = await _context.Products.FromSqlRaw(sql, price).ToListAsync();
 
-            return _mapper.Map<Product, ResponseProductDTO>(product);
+            return _mapper.Map<IEnumerable<ResponseProductDTO>>(products);
         }
 
         public async Task<IEnumerable<ResponseProductDTO>> ReadByOrderId(int orderId)
