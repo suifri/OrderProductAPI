@@ -36,33 +36,6 @@ namespace OrderProductAPI.Repository.Implementations
             return new OkResult();
         }
 
-        private List<ResponseOrderDTO> responseOrderDTOsConverter(List<Order> orders)
-        {
-            var resultList = new List<ResponseOrderDTO>();
-
-            foreach (var item in orders)
-            {
-                Dictionary<int, string> map = new Dictionary<int, string>();
-
-                for (int i = 0; i < item.OrderProducts.Count(); i++)
-                    map.Add(item.OrderProducts.ElementAt(i).Product.Id, item.OrderProducts.ElementAt(i).Product.Name);
-
-                resultList.Add(new ResponseOrderDTO { Id = item.Id, CustomerFullName = item.CustomerFullName, CreatedOn = item.CreatedOn, CustomerPhone = item.CustomerPhone });
-            }
-
-            return resultList;
-        }
-
-        private ResponseOrderDTO responseOrderDTOConverter(Order order)
-        {
-            Dictionary<int, string> map = new Dictionary<int, string>();
-
-            for (int i = 0; i < order.OrderProducts.Count(); i++)
-                map.Add(order.OrderProducts.ElementAt(i).Product.Id, order.OrderProducts.ElementAt(i).Product.Name);
-
-            return new ResponseOrderDTO { Id = order.Id, CreatedOn = order.CreatedOn, CustomerFullName = order.CustomerFullName, CustomerPhone = order.CustomerPhone };
-        }
-
         public async Task<IEnumerable<ResponseOrderDTO>> Read()
         {
             var res = await _context.Orders.Include(x => x.OrderProducts).ThenInclude(x => x.Product).ToListAsync();
@@ -87,13 +60,9 @@ namespace OrderProductAPI.Repository.Implementations
 
         public async Task<IEnumerable<ResponseOrderDTO>> Read(string code)
         {
-            var sqlSelectOrder = @"SELECT * FROM [Order]";
-
-            var order = _mapper.Map<ResponseOrderDTO>((await _context.Orders.FromSqlRaw<Order>(sqlSelectOrder).ToListAsync()).FirstOrDefault());
-
-
-
-            return null;
+            var res = await _context.Orders.Include(x => x.OrderProducts).ThenInclude(x => x.Product).Where(o => o.OrderProducts.Any(op => op.Product.Code == code)).ToListAsync();
+ 
+            return _mapper.Map<IEnumerable<ResponseOrderDTO>>(res);
         }
     }
 }

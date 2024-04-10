@@ -7,6 +7,5 @@
         public required string CustomerFullName { get; init; } = null!;
         public required string CustomerPhone { get; init; } = null!;
         public IEnumerable<ResponseProductDTO> Products { get; set; }
-        //public required Dictionary<int, string> ProductInformation { get; init; } = null!;
     }
 }

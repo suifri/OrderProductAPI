@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using OrderProductAPI.Contexts;
 using OrderProductAPI.DTO.Request;
 using OrderProductAPI.Mapper;
+using OrderProductAPI.Middlewares;
 using OrderProductAPI.Repository.Implementations;
 using OrderProductAPI.Repository.Interfaces;
 using OrderProductAPI.Validators;
@@ -35,6 +36,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

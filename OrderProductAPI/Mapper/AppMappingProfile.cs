@@ -11,6 +11,10 @@ namespace OrderProductAPI.Mapper
         {
             CreateMap<RequestProductDTO, Product>();
             CreateMap<Product, ResponseProductDTO>();
+            CreateMap<RequestOrderProductDTO, OrderProduct>(); 
+            CreateMap<RequestOrderDTO, Order>()
+                .ForMember(x => x.OrderProducts, o => o.MapFrom(y => y.orderProducts));
+
 
             CreateMap<OrderProduct, ResponseProductDTO>()
                 .ForMember(x => x.Id, o => o.MapFrom(y => y.Product.Id))
